@@ -15,7 +15,7 @@ class App extends React.Component{
   }
 
   afficheTaches(){
-    return this.state.taches.map((element , index) => <Tache key={index} texte={element.title} isChecked={element.isChecked} check={() => this.checkTache(index)} delete={() => this.deleteTache(index)} deplacementBas={() => this.deplacementBasTache(index)} deplacementHaut={() => this.deplacementHautTache(index)}/>);
+    return this.state.taches.map((element , index) => <Tache key={index} texte={element.title} checked={element.isChecked} check={() => this.checkTache(index)} delete={() => this.deleteTache(index)} deplacementBas={() => this.deplacementBasTache(index)} deplacementHaut={() => this.deplacementHautTache(index)}/>);
   }
 
   setNumberOfChecked(){
@@ -29,19 +29,19 @@ class App extends React.Component{
   checkTache(i){
     let newTaches = this.state.taches.slice();
     newTaches[i].isChecked = !(newTaches[i].isChecked);
-    this.setState({taches: newTaches})
+    this.setState({taches: newTaches});
   }
 
   deleteTache(i){
     let newTaches = this.state.taches.slice();
     newTaches.splice(i,1);
-    this.setState({taches: newTaches})
+    this.setState({taches: newTaches});
   }
 
   ajouterTache(){
     let newTaches = this.state.taches.slice();
     newTaches.push({title: prompt(), isChecked: false});
-    this.setState({taches: newTaches})
+    this.setState({taches: newTaches});
   }
 
   deplacementBasTache(i){
@@ -50,24 +50,43 @@ class App extends React.Component{
       let tmp = newTaches[i];
       newTaches[i] = newTaches[i+1];
       newTaches[i+1] = tmp;
-      this.setState({taches: newTaches})
+      this.setState({taches: newTaches});
     }
   }
 
   deplacementHautTache(i){
-    console.log(i);
     if(i > 0){
       let newTaches = this.state.taches.slice();
       let tmp = newTaches[i];
       newTaches[i] = newTaches[i-1];
       newTaches[i-1] = tmp;
-      this.setState({taches: newTaches})
-    }
+      this.setState({taches: newTaches});
+      
+    };
   }
 
-  save(){
+  sauvegarder(){
     localStorage.setItem('tasks',JSON.stringify(this.state.taches));
     this.setState({taches : JSON.parse(localStorage.getItem("tasks"))});
+  }
+
+  rechercher(){
+    let newTaches = [];
+    let recherche = prompt();
+    console.log(recherche);
+    if(recherche === null);
+    else if(!(recherche === "")){
+      console.log(recherche);
+      this.state.taches.forEach(element => {
+        if(element.title.includes(recherche)){
+          newTaches.push(element);
+        }
+      });
+      this.setState({taches: newTaches})
+    }
+    else{
+      this.setState({taches : JSON.parse(localStorage.getItem("tasks"))});
+    }
   }
 
   render(){
@@ -75,7 +94,7 @@ class App extends React.Component{
       <div>
         <Header nbTachesChecked={this.setNumberOfChecked()} nbTaches={this.state.taches.length} />
         <ul>{this.afficheTaches()}</ul>
-        <Footer ajouter={() => this.ajouterTache()} save={() => this.save()}/>
+        <Footer ajouter={() => this.ajouterTache()} rechercher={() => this.rechercher()} sauvegarder={() => this.sauvegarder()}/>
       </div>
     );
   }
